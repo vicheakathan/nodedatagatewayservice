@@ -14,6 +14,7 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
+  console.log(res);
   res.send(
       `<h1 style='text-align: center'>
         🎉Server is running🎉
@@ -103,10 +104,37 @@ app.post('/upload', (req, res, next) => {
 
 
 app.get('/status', (req, res) => {
-  res.send(
-    `<h1 style='text-align: center'>
-      🎉Server is runningssss🎉
-    </h1>`
-);
+  //console.log('Successfully came');
+  //From GET request 3 parameters below and store in variable
+  let fileId = req.headers['x-file-id'];
+  let name = req.headers['name'];
+  let fileSize = parseInt(req.headers['size'], 10);
+  console.log(name);
+  if (name) {
+      try {
+          let stats = fs.statSync('../src/assets/images/' + name); //grabs file information and returns
+          //checking file exists or not
+          // if (stats.isFile()) {
+          //     console.log(`fileSize is ${fileSize} and already uploaded file size ${stats.size}`);
+          //     if (fileSize == stats.size) {
+          //         res.send({ 'status': 'file is present' }) //returns if file exists
+          //         return;
+          //     }
+          //     if (!uploads[fileId])
+          //         uploads[fileId] = {}
+          //     console.log(uploads[fileId]);
+          //     uploads[fileId]['bytesReceived'] = stats.size;//checks total amount of file uploaded
+          //     console.log(uploads[fileId], stats.size);
+          // }
+      } catch (er) {
+
+      }
+
+  }
+  let upload = uploads[fileId];
+  if (upload)
+      res.send({ "uploaded": upload.bytesReceived });//returns to FrontEnd amout of bytes uploaded
+  else
+      res.send({ "uploaded": 0 });
 
 });
