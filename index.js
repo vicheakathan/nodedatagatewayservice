@@ -7,7 +7,7 @@ const port = 3000;
 app.use(function(req,res){
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Header' , 'authorization');
-}); // allow access header
+}); // allow access headers
 
 app.listen(port, () => {
   console.log("🎉Server is running🎉");
