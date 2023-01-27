@@ -1,8 +1,9 @@
+const { json } = require('body-parser');
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const fs = require('fs');
-var http = require('http');
+// const bodyParser = require('body-parser');
+// const cors = require('cors');
+// const fs = require('fs');
+// const http = require('http');
 const app = express();
 const port = 3000;
 
