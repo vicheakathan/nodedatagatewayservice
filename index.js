@@ -11,86 +11,88 @@ const server = app.listen(3000, () => {
     console.log("🎉Server is running🎉");
 });
 
+app.get("/", (req, res) => {
+  res.send(
+      `<h1 style='text-align: center'>
+        🎉Server is running🎉
+      </h1>`
+  );
+});
+
 let uploads = {};
 
-app.post('/upload', (req, res, next) => {
-    let fileId = req.headers['x-file-id'];
-    let startByte = parseInt(req.headers['x-start-byte'], 10);
-    let name = req.headers['name'];
-    let fileSize = parseInt(req.headers['size'], 10);
-    console.log('file Size', fileSize, fileId, startByte);
-    if (uploads[fileId] && fileSize == uploads[fileId].bytesReceived) {
-        res.end();
-        return;
-    }
+// app.post('/upload', (req, res, next) => {
+//     let fileId = req.headers['x-file-id'];
+//     let startByte = parseInt(req.headers['x-start-byte'], 10);
+//     let name = req.headers['name'];
+//     let fileSize = parseInt(req.headers['size'], 10);
+//     console.log('file Size', fileSize, fileId, startByte);
+//     if (uploads[fileId] && fileSize == uploads[fileId].bytesReceived) {
+//         res.end();
+//         return;
+//     }
 
-    console.log(fileId);
+//     console.log(fileId);
 
-    if (!fileId) {
-        res.writeHead(400, "No file id");
-        res.end(400);
-    }
-    console.log(uploads[fileId]);
-    if (!uploads[fileId])
-        uploads[fileId] = {};
+//     if (!fileId) {
+//         res.writeHead(400, "No file id");
+//         res.end(400);
+//     }
+//     console.log(uploads[fileId]);
+//     if (!uploads[fileId])
+//         uploads[fileId] = {};
 
-    let upload = uploads[fileId]; 
+//     let upload = uploads[fileId]; 
 
-    let fileStream;
+//     let fileStream;
 
-    if (!startByte) {
-        upload.bytesReceived = 0;
-        let name = req.headers['name'];
-        fileStream = fs.createWriteStream(`../src/assets/images/${name}`, {
-            flags: 'w'
-        });
-    } else {
-        if (upload.bytesReceived != startByte) {
-            res.writeHead(400, "Wrong start byte");
-            res.end(upload.bytesReceived);
-            return;
-        }
-        fileStream = fs.createWriteStream(`../src/assets/images/${name}`, {
-            flags: 'a'
-        });
-    }
+//     if (!startByte) {
+//         upload.bytesReceived = 0;
+//         let name = req.headers['name'];
+//         fileStream = fs.createWriteStream(`../src/assets/images/${name}`, {
+//             flags: 'w'
+//         });
+//     } else {
+//         if (upload.bytesReceived != startByte) {
+//             res.writeHead(400, "Wrong start byte");
+//             res.end(upload.bytesReceived);
+//             return;
+//         }
+//         fileStream = fs.createWriteStream(`../src/assets/images/${name}`, {
+//             flags: 'a'
+//         });
+//     }
 
-    req.on('data', function (data) {
-        upload.bytesReceived += data.length; 
-    });
+//     req.on('data', function (data) {
+//         upload.bytesReceived += data.length; 
+//     });
 
-    req.pipe(fileStream);
+//     req.pipe(fileStream);
 
-    fileStream.on('close', function () {
-        console.log(upload.bytesReceived, fileSize);
-        if (upload.bytesReceived == fileSize) {
-            console.log("Upload finished");
-            delete uploads[fileId];
+//     fileStream.on('close', function () {
+//         console.log(upload.bytesReceived, fileSize);
+//         if (upload.bytesReceived == fileSize) {
+//             console.log("Upload finished");
+//             delete uploads[fileId];
 
-            res.send({ 'status': 'uploaded' });
-            res.end();
-        } else {
-            console.log("File unfinished, stopped at " + upload.bytesReceived);
-            res.writeHead(500, "Server Error");
-            res.end();
-        }
-    });
+//             res.send({ 'status': 'uploaded' });
+//             res.end();
+//         } else {
+//             console.log("File unfinished, stopped at " + upload.bytesReceived);
+//             res.writeHead(500, "Server Error");
+//             res.end();
+//         }
+//     });
 
-    fileStream.on('error', function (err) {
-        console.log("fileStream error", err);
-        res.writeHead(500, "File error");
-        res.end();
-    });
+//     fileStream.on('error', function (err) {
+//         console.log("fileStream error", err);
+//         res.writeHead(500, "File error");
+//         res.end();
+//     });
 
-});
+// });
 
-app.get("/", (req, res) => {
-    res.send(
-        `<h1 style='text-align: center'>
-          🎉Server is running🎉
-        </h1>`
-    );
-});
+
 
 // app.get('/status', (req, res) => {
 //     let fileId = req.headers['x-file-id'];
