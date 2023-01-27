@@ -5,8 +5,8 @@ const fs = require('fs');
 var http = require('http');
 
 const app = express();
-app.use(cors({ origin: '*' }));
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(cors({ origin: '*' }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 const server = app.listen(3000, () => {
     console.log("🎉Server is running🎉");
 });
