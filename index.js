@@ -1,17 +1,13 @@
 const express = require('express');
-// const bodyParser = require('body-parser');
-// const cors = require('cors');
 const fs = require('fs');
 const http = require('http');
 const app = express();
 const port = 3000;
 
-// app.use(cors({ origin: '*' }));
-// app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(req,res){
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Header' , 'authorization');
-});
+}); // allow access header
 
 app.listen(port, () => {
   console.log("🎉Server is running🎉");
