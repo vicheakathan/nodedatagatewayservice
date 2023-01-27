@@ -6,8 +6,8 @@ var http = require('http');
 const app = express();
 const port = 3000;
 
-app.use(cors({ origin: '*' }));
-app.use(bodyParser.urlencoded({ extended: true }));
+// app.use(cors({ origin: '*' }));
+// app.use(bodyParser.urlencoded({ extended: true }));
 
 app.listen(port, () => {
   console.log("🎉Server is running🎉");
