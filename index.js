@@ -2,21 +2,17 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const app = express();
-// const cors = require('cors');
+const cors = require('cors');
 const port = 3000;
 const path = require('path');
 const url = require("url");
 
 
-// app.use(cors({ origin: '*' }));
+app.use(cors({ origin: '*' }));
 
-app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-    res.setHeader('Access-Control-Allow-Credentials', true);
-    next();
-});
+// app.use(function(req, res, next) {
+//     res.header("Access-Control-Allow-Headers","*")
+// });
 
 app.listen(port, () => {
   console.log("🎉Server is running🎉");
