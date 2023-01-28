@@ -2,19 +2,19 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const app = express();
+const cors = require('cors');
 const port = 3000;
 
-app.use(function(req,res){
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Header' , 'authorization');
-}); // allow access headers
+app.use(cors({ origin: '*' }));
+// app.use(function(req, res, next) {
+//     res.setHeader('Content-Type', 'text/event-stream');
+// });
 
 app.listen(port, () => {
   console.log("🎉Server is running🎉");
 });
 
 app.get("/", (req, res) => {
-  console.log(res);
   res.send(
       `<h1 style='text-align: center'>
         🎉Server is running🎉
@@ -53,7 +53,7 @@ app.post('/upload', (req, res, next) => {
   if (!startByte) {
       upload.bytesReceived = 0;
       let name = req.headers['name'];
-      fileStream = fs.createWriteStream(`https://test-datagateway.apigateway.store/src/assets/images/${name}`, {
+      fileStream = fs.createWriteStream(`./assets/images/${name}`, {
           flags: 'w' //with "w"(write stream ) it keeps on adding data
       });
   } else {
@@ -63,7 +63,7 @@ app.post('/upload', (req, res, next) => {
           return;
       }
       // append to existing file
-      fileStream = fs.createWriteStream(`https://test-datagateway.apigateway.store/src/assets/images/${name}`, {
+      fileStream = fs.createWriteStream(`./assets/images/${name}`, {
           flags: 'a'
       });
   }
@@ -112,7 +112,7 @@ app.get('/status', (req, res) => {
   console.log(name);
   if (name) {
       try {
-          let stats = fs.statSync('https://test-datagateway.apigateway.store/src/assets/images/' + name); //grabs file information and returns
+          let stats = fs.statSync('./assets/images/' + name); //grabs file information and returns
           //checking file exists or not
           // if (stats.isFile()) {
           //     console.log(`fileSize is ${fileSize} and already uploaded file size ${stats.size}`);
