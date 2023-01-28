@@ -168,3 +168,26 @@ app.get('/assets/images/:id', (req, res) => {
         });
     });
 });
+
+
+
+// view index of file image
+app.get('/assets/images', (req, res) => {
+    const fullPath = path.join(__dirname, '/assets/images');
+    // fs.readdir(fullPath, (error, files) => {
+    //     if (error) console.log(error)
+    //     files.forEach( file => console.log(file))
+    // });
+
+    res.write("<h1> Index of " + fullPath + "</h1>");
+    res.write("<ul>");
+        fs.readdir(fullPath, (error, files) => {
+            if (error) console.log(error)
+            files.forEach( file => {
+                res.write("<li>");
+                    res.write(file);
+                res.write("</li>");
+            });
+        });
+    res.write("</ul>");
+});
