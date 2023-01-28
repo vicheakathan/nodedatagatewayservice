@@ -11,7 +11,7 @@ const url = require("url");
 app.use(cors({ origin: '*' }));
 
 // app.use(function(req, res, next) {
-//     res.header("Access-Control-Allow-Headers","*")
+//     res.header("Access-Control-Allow-Headers","Access-Control-Allow-Headers")
 // });
 
 app.listen(port, () => {
