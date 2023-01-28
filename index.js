@@ -2,10 +2,10 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const app = express();
-const cors = require('cors');
+// const cors = require('cors');
 const port = 3000;
 
-app.use(cors({ origin: '*' }));
+// app.use(cors({ origin: '*' }));
 // app.use(function(req, res, next) {
 //     res.setHeader('Content-Type', 'text/event-stream');
 // });
