@@ -2,13 +2,13 @@ const express = require('express');
 const fs = require('fs');
 const http = require('http');
 const app = express();
-const cors = require('cors');
+// const cors = require('cors');
 const port = 3000;
 const path = require('path');
 const url = require("url");
 
 
-app.use(cors({ origin: '*' }));
+// app.use(cors({ origin: '*' }));
 
 app.listen(port, () => {
   console.log("🎉Server is running🎉");
