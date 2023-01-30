@@ -7,7 +7,6 @@ const port = 3000;
 const path = require('path');
 const url = require("url");
 
-
 // app.use(cors({ origin: '*' }));
 
 app.use(function(req, res, next) {
@@ -22,11 +21,11 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  res.send(
-      `<h1 style='text-align: center'>
-        🎉Server is running🎉
-      </h1>`
-  );
+    res.send(
+        `<h1 style='text-align: center'>
+            🎉Server is running🎉
+        </h1>`
+    );
 });
 
 let uploads = {};
@@ -155,10 +154,24 @@ app.get('/assets/images/:id', (req, res) => {
             return;
         }
  
-        var ext = path.extname(action);
+        var extname = path.extname(action);
         var contentType = "text/plain";
-        if (ext === ".png") {
-            contentType = "image/png";
+        switch (extname) {
+            case '.png':
+                contentType = 'image/png';
+                break;      
+            case '.jpg':
+                contentType = 'image/jpg';
+                break;
+            case '.jpeg':
+                contentType = 'image/jpeg';
+                break;
+            case '.ico':
+                contentType = 'image/x-ico';
+                break;
+            case '.svg':
+                contentType = 'image/svg+xml';
+                break;
         }
  
         res.writeHead(200, {"Content-Type": contentType });
@@ -173,21 +186,70 @@ app.get('/assets/images/:id', (req, res) => {
 
 // view index of file image
 app.get('/assets/images', (req, res) => {
-    const fullPath = path.join(__dirname, '/assets/images');
-    // fs.readdir(fullPath, (error, files) => {
-    //     if (error) console.log(error)
-    //     files.forEach( file => console.log(file))
-    // });
+    try {
+        req_url = decodeURIComponent(req.url).replace(/\/+/g, '/');
+        stats = fs.statSync(__dirname + req_url);
+        var HOST = req.get('host');
 
-    res.write("<h1> Index of " + fullPath + "</h1>");
-    res.write("<ul>");
-        fs.readdir(fullPath, (error, files) => {
-            if (error) console.log(error)
-            files.forEach( file => {
-                res.write("<li>");
-                    res.write(file);
-                res.write("</li>");
-            });
-        });
-    res.write("</ul>");
+        lsof = fs.readdirSync(__dirname + req_url, {encoding:'utf8', withFileTypes:false});
+        res.writeHead(200, {'Content-Type': 'text/html; charset=utf-8'});
+        res.end(html_page(req.protocol + '://' + HOST, req_url, lsof));
+        return;
+    } catch (err) {
+        res.writeHead(404);
+        res.end(err);
+        return;
+    }
 });
+
+function html_page(host, req_url, lsof) {
+    list = [];
+
+    templete = (host, req_url, file) => {
+        return `
+            <li><a class="icon file" href="${host}${encodeURI(req_url)}${req_url.slice(-1) == '/' ? '' : '/'}${encodeURI(file)}">${file}</a></li>
+        `;
+    }
+  
+    lsof.forEach(file => {
+      list.push(templete(host, req_url, file));
+    });
+  
+    return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta name="color-scheme" content="light dark">
+        <meta http-equiv="content-type" content="text/html" charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style>
+            h1 {
+                border-bottom: 1px solid #c0c0c0;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                white-space: nowrap;
+            }
+            a.file {
+                background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAIAAACQkWg2AAAABnRSTlMAAAAAAABupgeRAAABEElEQVR42nRRx3HDMBC846AHZ7sP54BmWAyrsP588qnwlhqw/k4v5ZwWxM1hzmGRgV1cYqrRarXoH2w2m6qqiqKIR6cPtzc3xMSML2Te7XZZlnW7Pe/91/dX47WRBHuA9oyGmRknzGDjab1ePzw8bLfb6WRalmW4ip9FDVpYSWZgOp12Oh3nXJ7nxoJSGEciteP9y+fH52q1euv38WosqA6T2gGOT44vry7BEQtJkMAMMpa6JagAMcUfWYa4hkkzAc7fFlSjwqCoOUYAF5RjHZPVCFBOtSBGfgUDji3c3jpibeEMQhIMh8NwshqyRsBJgvF4jMs/YlVR5KhgNpuBLzk0OcUiR3CMhcPaOzsZiAAA/AjmaB3WZIkAAAAASUVORK5CYII=) left top no-repeat;
+            }
+            a.icon {
+                padding-inline-start: 1.5em;
+                text-decoration: none;
+                user-select: auto;
+            }
+            ul,li{
+                list-style-type: decimal
+            }
+        </style>
+        <title>Index of ${host + req_url}</title>
+    </head>
+    <body>
+    <h1>Index of ${host + req_url}</h1>
+        <a href="${host}">/...</a>
+        <ul>
+            ${list.join('')}
+        </ul>
+    </body>
+    </html>`;
+    // ${list.join('<br/>\n')}
+}
