@@ -72,6 +72,7 @@ app.post('/upload', (req, res, next) => {
             flags: 'a'
         });
     }
+    console.log(name);
 
     req.on('data', function (data) {
         upload.bytesReceived += data.length; 
@@ -101,7 +102,6 @@ app.post('/upload', (req, res, next) => {
     });
 
 });
-
 
 
 app.get('/status', (req, res) => {
@@ -139,7 +139,6 @@ app.get('/status', (req, res) => {
         res.send({ "uploaded": 0 });
 
 });
-
 
 // view image 
 app.get('/assets/images/:id', (req, res) => {
@@ -183,8 +182,6 @@ app.get('/assets/images/:id', (req, res) => {
     });
 });
 
-
-
 // view index of file image
 app.get('/assets/images', (req, res) => {
     try {
@@ -208,7 +205,7 @@ function html_page(host, req_url, lsof) {
 
     templete = (host, req_url, file) => {
         return `
-            <li><a class="icon file" href="${host}${encodeURI(req_url)}${req_url.slice(-1) == '/' ? '' : '/'}${encodeURI(file)}">${file}</a></li>
+            <li><img src="${file}" width="20" style="margin-right:10px"><a class="" href="${host}${encodeURI(req_url)}${req_url.slice(-1) == '/' ? '' : '/'}${encodeURI(file)}">${file}</a></li>
         `;
     }
   
@@ -253,3 +250,40 @@ function html_page(host, req_url, lsof) {
     </body>
     </html>`;
 }
+
+
+// delete file
+app.get('/delete/:id' , (req, res) => {
+    var request = url.parse(req.url, true);
+    var fileName = path.basename(req.path);
+    const directory = "assets/images" ;
+    fs.readdir(directory, (err, files) => {
+        if (err) throw err;
+        var a = 0;
+        for (const file of files) {
+            if (file == fileName) {
+                a = 1;
+                break;
+            } 
+        }
+
+        if (a == 1) {
+            fs.unlink(path.join(directory, fileName), (err) => {
+                res.send(
+                    `<meta name="color-scheme" content="light dark">
+                    <h1 style='text-align: center'>
+                        This file `+ fileName +` deleted.
+                    </h1>`
+                );
+                if (err) throw err;
+            });
+        } else {
+            res.send(
+                `<meta name="color-scheme" content="light dark">
+                <h1 style='text-align: center'>
+                   File not found.
+                </h1>`
+            );
+        }
+    });
+});
