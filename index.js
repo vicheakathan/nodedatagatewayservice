@@ -22,8 +22,9 @@ app.listen(port, () => {
 
 app.get("/", (req, res) => {
     res.send(
-        `<h1 style='text-align: center'>
-            🎉Server is running🎉
+        `<meta name="color-scheme" content="light dark">
+        <h1 style='text-align: center'>
+            🔥NodeJs server is running🔥
         </h1>`
     );
 });
